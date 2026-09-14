@@ -64,7 +64,14 @@ app.get('/api/events', subscribe);
 
 app.get('/api/stores', async (_req, res, next) => {
   try {
-    const [rows] = await pool.query('SELECT id, name, city, state FROM stores ORDER BY name');
+    const [rows] = await pool.query('SELECT id, name, city, state FROM stores WHERE active = 1 ORDER BY name');
+    res.json(rows);
+  } catch (error) { next(error); }
+});
+
+app.get('/api/admin/stores', adminOnly, async (_req, res, next) => {
+  try {
+    const [rows] = await pool.query('SELECT id, name, city, state, active FROM stores ORDER BY name');
     res.json(rows);
   } catch (error) { next(error); }
 });
@@ -74,10 +81,43 @@ app.post('/api/stores', adminOnly, async (req, res, next) => {
     const name = cleanText(req.body.name, 120);
     const city = cleanText(req.body.city, 100);
     const state = cleanText(req.body.state, 2).toUpperCase();
-    if (!name || !city || state.length !== 2) return res.status(400).json({ error: 'Dados da loja inválidos.' });
-    const [result] = await pool.execute('INSERT INTO stores (name, city, state) VALUES (?, ?, ?)', [name, city, state]);
+    if (!name || !city || state.length !== 2) return res.status(400).json({ error: 'Dados do estabelecimento inválidos.' });
+    const active = req.body.active === false || req.body.active === 0 ? 0 : 1;
+    const [result] = await pool.execute('INSERT INTO stores (name, city, state, active) VALUES (?, ?, ?, ?)', [name, city, state, active]);
     broadcast('stores-updated');
-    res.status(201).json({ id: result.insertId, name, city, state });
+    res.status(201).json({ id: result.insertId, name, city, state, active });
+  } catch (error) { next(error); }
+});
+
+app.put('/api/stores/:id', adminOnly, async (req, res, next) => {
+  try {
+    const name = cleanText(req.body.name, 120);
+    const city = cleanText(req.body.city, 100);
+    const state = cleanText(req.body.state, 2).toUpperCase();
+    if (!name || !city || state.length !== 2) return res.status(400).json({ error: 'Dados do estabelecimento inválidos.' });
+    const active = req.body.active === false || req.body.active === 0 ? 0 : 1;
+    const [result] = await pool.execute('UPDATE stores SET name=?, city=?, state=?, active=? WHERE id=?', [name, city, state, active, Number(req.params.id)]);
+    if (!result.affectedRows) return res.status(404).json({ error: 'Estabelecimento não encontrado.' });
+    broadcast('stores-updated');
+    res.json({ id: Number(req.params.id), name, city, state, active });
+  } catch (error) { next(error); }
+});
+
+app.patch('/api/stores/:id/status', adminOnly, async (req, res, next) => {
+  try {
+    const [result] = await pool.execute('UPDATE stores SET active=? WHERE id=?', [req.body.active ? 1 : 0, Number(req.params.id)]);
+    if (!result.affectedRows) return res.status(404).json({ error: 'Estabelecimento não encontrado.' });
+    broadcast('stores-updated');
+    res.json({ ok: true });
+  } catch (error) { next(error); }
+});
+
+app.delete('/api/stores/:id', adminOnly, async (req, res, next) => {
+  try {
+    const [result] = await pool.execute('DELETE FROM stores WHERE id=?', [Number(req.params.id)]);
+    if (!result.affectedRows) return res.status(404).json({ error: 'Estabelecimento não encontrado.' });
+    broadcast('stores-updated');
+    res.status(204).end();
   } catch (error) { next(error); }
 });
 

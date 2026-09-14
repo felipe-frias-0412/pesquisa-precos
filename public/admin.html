@@ -4,11 +4,15 @@
 <body>
 <header class="topbar"><a class="brand" href="/"><span class="brand-mark">PC</span><span>PreçoCerto</span></a><a class="admin-link" href="/">Ver vitrine</a></header>
 <main>
-  <section class="admin-shell">
+  <div class="key-box"><label>Chave administrativa<input id="api-key" type="password" autocomplete="current-password" placeholder="Cole sua ADMIN_API_KEY"></label></div>
+  <div id="notice" class="notice hidden"></div>
+  <div class="admin-tabs">
+    <button class="tab-btn active" data-tab="promotions" type="button">Promoções</button>
+    <button class="tab-btn" data-tab="stores" type="button">Estabelecimentos</button>
+  </div>
+  <section class="admin-shell" id="view-promotions">
     <div class="panel">
       <h1>Gerenciar promoções</h1>
-      <div class="key-box"><label>Chave administrativa<input id="api-key" type="password" autocomplete="current-password" placeholder="Cole sua ADMIN_API_KEY"></label></div>
-      <div id="notice" class="notice hidden"></div>
       <form id="promotion-form" class="admin-form">
         <input id="promotion-id" type="hidden">
         <label class="wide">Produto *<input name="product_name" required maxlength="180"></label>
@@ -28,6 +32,21 @@
     </div>
     <div class="panel"><h2>Promoções cadastradas</h2><div id="admin-list" class="admin-list"><div class="empty">Informe a chave administrativa.</div></div></div>
   </section>
+  <section class="admin-shell hidden" id="view-stores">
+    <div class="panel">
+      <h1>Gerenciar estabelecimentos</h1>
+      <form id="store-form" class="admin-form">
+        <input id="store-id" type="hidden">
+        <label class="wide">Nome *<input name="name" required maxlength="120"></label>
+        <label>Cidade *<input name="city" required maxlength="100"></label>
+        <label>Estado *<input name="state" required maxlength="2" placeholder="Ex.: MS"></label>
+        <label class="wide"><span><input name="active" type="checkbox" checked> Estabelecimento ativo</span></label>
+        <div class="actions"><button class="primary" type="submit">Salvar estabelecimento</button><button id="cancel-store-edit" class="secondary hidden" type="button">Cancelar edição</button></div>
+      </form>
+    </div>
+    <div class="panel"><h2>Estabelecimentos cadastrados</h2><div id="store-list" class="admin-list"><div class="empty">Informe a chave administrativa.</div></div></div>
+  </section>
 </main>
 <script src="/admin.js" defer></script>
-</body></html>
+</body>
+</html>

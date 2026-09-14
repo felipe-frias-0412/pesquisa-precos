@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS stores (
   name VARCHAR(120) NOT NULL,
   city VARCHAR(100) NOT NULL,
   state CHAR(2) NOT NULL,
+  active BOOLEAN NOT NULL DEFAULT TRUE,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   UNIQUE KEY uk_store_location (name, city, state)
 );
