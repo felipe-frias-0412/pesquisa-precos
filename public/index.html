@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Compare preços e encontre promoções atualizadas.">
+  <title>PreçoCerto — Pesquisa de preços</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/"><span class="brand-mark">PC</span><span>PreçoCerto</span></a>
+    <a class="admin-link" href="/admin">Painel administrativo</a>
+  </header>
+  <main>
+    <section class="search-panel">
+      <div>
+        <span class="eyebrow">OFERTAS ATUALIZADAS</span>
+        <h1>Encontre o melhor preço perto de você.</h1>
+      </div>
+      <form id="filters" class="filters">
+        <label class="search-field"><span>Pesquisar produto</span><input id="search" type="search" placeholder="Ex.: arroz, notebook, remédio"></label>
+        <label><span>Categoria</span><select id="category"><option value="">Todas</option></select></label>
+        <label><span>Estabelecimento</span><select id="store"><option value="">Todos</option></select></label>
+        <label><span>Ordenar</span><select id="sort"><option value="discount_desc">Maior desconto</option><option value="price_asc">Menor preço</option><option value="newest">Mais recentes</option></select></label>
+      </form>
+    </section>
+    <section class="results-head">
+      <div><strong id="count">Carregando…</strong><span id="live-status" class="live">Atualização em tempo real</span></div>
+      <button id="clear" class="ghost" type="button">Limpar filtros</button>
+    </section>
+    <section id="results" class="product-grid" aria-live="polite"></section>
+  </main>
+  <template id="card-template">
+    <article class="card">
+      <div class="image-wrap"><img alt=""><span class="discount"></span></div>
+      <div class="card-content">
+        <div class="category"></div><h2></h2><p class="description"></p>
+        <div class="store"></div>
+        <div class="pricing"><div><s></s><strong></strong></div><a class="offer-link" target="_blank" rel="noopener">Ver oferta</a></div>
+        <div class="expires"></div>
+      </div>
+    </article>
+  </template>
+  <script src="/app.js" defer></script>
+</body>
+</html>
